@@ -1,6 +1,7 @@
 import tarfile
 import os
 import blog
+import shutil
 
 class leafpkg():
     def __init__(self):
@@ -10,9 +11,7 @@ class leafpkg():
         self.description = ""
         self.dependencies = ""
     
-    @staticmethod
     def write_package_directory(self):
-        blog.info("Initializing leaf package directory.")
         pkg_dir = "{}-{}".format(self.name, self.version)
         pkg_path = os.path.join(os.getcwd(), pkg_dir)
 
@@ -27,16 +26,13 @@ class leafpkg():
         os.mkdir(os.path.join(pkg_path, "data"))
 
         leaf_pf = open(os.path.join(pkg_path, "leaf.pkg"), "w")
-        leaf_pf.write("name={}\n".format(package.name))
-        leaf_pf.write("version={}\n".format(package.version))
-        leaf_pf.write("real_version={}\n".format(package.real_version))
-        leaf_pf.write("description={}\n".format(package.description))
-        leaf_pf.write("dependencies={}\n".format(package.dependencies))
-
-        blog.info("Package {} created.".format(package.name))
+        leaf_pf.write("name={}\n".format(self.name))
+        leaf_pf.write("version={}\n".format(self.version))
+        leaf_pf.write("real_version={}\n".format(self.real_version))
+        leaf_pf.write("description={}\n".format(self.description))
+        leaf_pf.write("dependencies={}\n".format(self.dependencies))
         return os.path.join(pkg_path, "data")
     
-    @staticmethod
     def create_tar_package(self, package_directory):
         pkg_name = "{}-{}".format(self.name, self.version)
         tar_name = "{}.lfpkg".format(pkg_name)

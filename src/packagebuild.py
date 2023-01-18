@@ -1,3 +1,4 @@
+import os
 import json
 import blog
 
@@ -9,28 +10,29 @@ class package_build():
     #
     @staticmethod
     def from_json(json_str):
+        json_obj = json.loads(json_str)
         package_build_obj = package_build()
 
-        package_build_obj.name = package_build.try_get_json_value(json_str, "name")
-        package_build_obj.real_version = package_build.try_get_json_value(json_str, "real_version")
-        package_build_obj.version = package_build.try_get_json_value(json_str, "version")
-        package_build_obj.source = package_build.try_get_json_value(json_str, "source")
+        package_build_obj.name = package_build.try_get_json_value(json_obj, "name")
+        package_build_obj.real_version = package_build.try_get_json_value(json_obj, "real_version")
+        package_build_obj.version = package_build.try_get_json_value(json_obj, "version")
+        package_build_obj.source = package_build.try_get_json_value(json_obj, "source")
         
-        extra_sources_str = package_build.try_get_json_value(json_str, "extra_sources")
+        extra_sources_str = package_build.try_get_json_value(json_obj, "extra_sources")
         package_build_obj.extra_sources = package_build.parse_str_to_array(extra_sources_str) 
 
-        package_build_obj.description = package_build.try_get_json_value(json_str, "description")
+        package_build_obj.description = package_build.try_get_json_value(json_obj, "description")
 
-        dep_str = package_build.try_get_json_value(json_str, "dependencies")
+        dep_str = package_build.try_get_json_value(json_obj, "dependencies")
         package_build_obj.dependencies = package_build.parse_str_to_array(dep_str)
         
-        build_dep_str = package_build.try_get_json_value(json_str, "build_dependencies")
+        build_dep_str = package_build.try_get_json_value(json_obj, "build_dependencies")
         package_build_obj.build_dependencies = package_build.parse_str_to_array(build_dep_str)
 
-        cross_dep_str = package_build.try_get_json_value(json_str, "cross_dependencies")
+        cross_dep_str = package_build.try_get_json_value(json_obj, "cross_dependencies")
         package_build_obj.cross_dependencies = package_build.parse_str_to_array(cross_dep_str) 
 
-        package_build_obj.build_script = package_build.try_get_json_value(json_str, "build_script")
+        package_build_obj.build_script = package_build.try_get_json_value(json_obj, "build_script")
         return package_build_obj
     
     #
@@ -93,19 +95,19 @@ class package_build():
                         package_build_obj.source = val
                 
                     case "extra_sources":
-                        package_build_obj.extra_sources = parse_str_to_array(val) 
+                        package_build_obj.extra_sources = package_build.parse_str_to_array(val) 
 
                     case "dependencies":
-                        package_build_obj.dependencies = parse_str_to_array(val)
+                        package_build_obj.dependencies = package_build.parse_str_to_array(val)
    
                     case "description":
                         package_build_obj.description = val
                         
                     case "builddeps":
-                        package_build_obj.build_dependencies = parse_str_to_array(val)
+                        package_build_obj.build_dependencies = package_build.parse_str_to_array(val)
                     
                     case "crossdeps":
-                        package_build_obj.cross_dependencies = parse_str_to_array(val)
+                        package_build_obj.cross_dependencies = package_build.parse_str_to_array(val)
                     
                     case "build":
                         build_opts = True
@@ -212,14 +214,14 @@ class package_build():
     def is_valid(self):
         # check if required fields are set
         if(self.name == "" or self.version == "" or self.real_version == ""):
-            return -1
+            return False
 
         # check if build tag is valid
         encountered_closing_tag = False
         closing_tag_error = False
 
         for line in self.build_script:
-            # if we continue iterating after we have seen a closing tag, the build is invalid.
+            # if we continue iterating after we have seen a closing tag, the pkgbuild is invalid.
             if(encountered_closing_tag):
                 closing_tag_error = True
                 break
@@ -230,6 +232,6 @@ class package_build():
 
         # build invalid, because closing tag error
         if(closing_tag_error):
-            return -1
+            return False
 
-        return 0
+        return True
