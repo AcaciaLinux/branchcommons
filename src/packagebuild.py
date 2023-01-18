@@ -18,19 +18,11 @@ class package_build():
         package_build_obj.version = package_build.try_get_json_value(json_obj, "version")
         package_build_obj.source = package_build.try_get_json_value(json_obj, "source")
         
-        extra_sources_str = package_build.try_get_json_value(json_obj, "extra_sources")
-        package_build_obj.extra_sources = package_build.parse_str_to_array(extra_sources_str) 
-
+        package_build_obj.extra_sources = package_build.try_get_json_value(json_obj, "extra_sources")
         package_build_obj.description = package_build.try_get_json_value(json_obj, "description")
-
-        dep_str = package_build.try_get_json_value(json_obj, "dependencies")
-        package_build_obj.dependencies = package_build.parse_str_to_array(dep_str)
-        
-        build_dep_str = package_build.try_get_json_value(json_obj, "build_dependencies")
-        package_build_obj.build_dependencies = package_build.parse_str_to_array(build_dep_str)
-
-        cross_dep_str = package_build.try_get_json_value(json_obj, "cross_dependencies")
-        package_build_obj.cross_dependencies = package_build.parse_str_to_array(cross_dep_str) 
+        package_build_obj.dependencies = package_build.try_get_json_value(json_obj, "dependencies")
+        package_build_obj.build_dependencies = package_build.try_get_json_value(json_obj, "build_dependencies")
+        package_build_obj.cross_dependencies = package_build.try_get_json_value(json_obj, "cross_dependencies")
 
         package_build_obj.build_script = package_build.try_get_json_value(json_obj, "build_script")
         return package_build_obj
