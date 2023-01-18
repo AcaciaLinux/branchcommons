@@ -34,7 +34,7 @@ class package_build():
 
         package_build_obj.build_script = package_build.try_get_json_value(json_obj, "build_script")
         return package_build_obj
-    
+   
     #
     # Returns a package_build object
     # from a given file
@@ -47,12 +47,20 @@ class package_build():
             return -1
         
         build_file = open(file_path, "r")
-        build_arr = build_file.read().split("\n")
+        return package_build.from_string(build_file.read())
+
+    #
+    # Returns a package_build object
+    # from a given pkgbuild as a string
+    #
+    @staticmethod
+    def from_string(pkgbuild_str):
+        pkg_build_arr = pkgbuild_str.split("\n")
         package_build_obj = package_build()
 
         build_opts = False
         command = ""
-        for prop in build_arr:
+        for prop in pkg_build_arr:
 
             #
             # build_opts mode (Build script)
