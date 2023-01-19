@@ -1,13 +1,16 @@
 import packagebuild
 import leafpkg
-
 import os
 
 SAMPLE_JSON = "{\"name\": \"iproute2\", \"version\": \"5.19.0\", \"real_version\": \"0\", \"dependencies\": \"[glibc][libelf]\", \"build_dependencies\": \"[glibc][libelf][flex][bison][findutils]\", \"cross_dependencies\": \"\", \"source\": \"https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.19.0.tar.xz\", \"extra_sources\": [], \"description\": \"\", \"build_script\": [\"cd $PKG_NAME-$PKG_VERSION\", \"sed -i /ARPD/d Makefile\", \"rm -fv man/man8/arpd.8\", \"make -j$(nproc) NETNS_RUN_DIR=/run/netns\", \"make DESTDIR=$PKG_INSTALL_DIR SBINDIR=/usr/sbin install\", \"rm -fv $PKG_INSTALL_DIR/usr/share/info/dir\"]}"
 
 def test_pkgbuild():
+    print("Reading from file:")
     pkg_build = packagebuild.package_build.from_file("package.bpb")
     
+    print("Real version:")
+    print(pkg_build.real_version)
+
     print("\n\nPKG_BUILD:")
     print(pkg_build.__dict__)
     print("\n\n")

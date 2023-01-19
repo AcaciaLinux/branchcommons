@@ -162,7 +162,18 @@ class package_build():
     # Get self as json
     #
     def get_json(self):
-        return json.dumps(self.__dict__)
+        res = { }
+        res["name"] = "{}".format(self.name)
+        res["version"] = "{}".format(self.version)
+        res["real_version"] = "{}".format(self.real_version)
+        res["dependencies"] = self.dependencies
+        res["build_dependencies"] = self.build_dependencies
+        res["cross_dependencies"] = self.cross_dependencies
+        res["source"] = "{}".format(self.source)
+        res["extra_sources"] = self.extra_sources
+        res["description"] = self.description
+        res["build_script"] = self.build_script
+        return json.dumps(res)
 
     #
     # write build file to disk
@@ -183,20 +194,24 @@ class package_build():
         package_build_file.write("\n")
         package_build_file.write("dependencies=")
         
-        for dep in self.dependencies:
-            package_build_file.write("[{}]".format(dep))
-
+        if(not self.build_dependencies is None):
+            for dep in self.dependencies:
+                package_build_file.write("[{}]".format(dep))
+    
         package_build_file.write("\n")
         package_build_file.write("builddeps=")
-   
-        for dep in self.build_dependencies:
-            package_build_file.write("[{}]".format(dep))
+        
+
+        if(not self.build_dependencies is None):
+            for dep in self.build_dependencies:
+                package_build_file.write("[{}]".format(dep))
 
         package_build_file.write("\n")
         package_build_file.write("crossdeps=")
- 
-        for dep in self.cross_dependencies:
-            package_build_file.write("[{}]".format(dep))
+        
+        if(not self.cross_dependencies is None):
+            for dep in self.cross_dependencies:
+                package_build_file.write("[{}]".format(dep))
        
         package_build_file.write("\n")
         package_build_file.write("description={}\n".format(self.description))
