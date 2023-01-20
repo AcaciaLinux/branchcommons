@@ -30,7 +30,12 @@ class leafpkg():
         leaf_pf.write("version={}\n".format(self.version))
         leaf_pf.write("real_version={}\n".format(self.real_version))
         leaf_pf.write("description={}\n".format(self.description))
-        leaf_pf.write("dependencies={}\n".format(self.dependencies))
+
+        leaf_pf.write("dependencies=".format(self.dependencies))
+        for d in self.dependencies:
+            leaf_pf.write("[{}]".format(d))
+
+        leaf_pf.write("\n".format(self.dependencies))
         return os.path.join(pkg_path, "data")
     
     def create_tar_package(self, package_directory):
