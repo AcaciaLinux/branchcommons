@@ -123,6 +123,7 @@ class package_build():
         try:
             return json_obj[key]
         except KeyError:
+            blog.debug("Key={}: No such key found. key=None".format(key)) 
             return None
 
     #
