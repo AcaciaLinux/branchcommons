@@ -73,7 +73,7 @@ class package_build():
                 key = prop[0:divider]
                 val = prop[divider+1:len(prop)]
 
-                if(len(key) == 0 or len(val) == 0 or val is None):
+                if(val is None):
                     continue
                 
                 match key:
