@@ -11,7 +11,7 @@ class package_build():
     @staticmethod
     def from_json(json_str):
         json_obj = json.loads(json_str)
-        print("Object after json parser is: {}".format(json_obj))
+        blog.debug("Object after json parser is: {}".format(json_obj))
         package_build_obj = package_build()
 
         package_build_obj.name = package_build.try_get_json_value(json_obj, "name")
@@ -69,18 +69,12 @@ class package_build():
             # Regular option parsing mode
             #
             else:
-                prop_arr = prop.split("=")
-                key = prop_arr[0]
-                
+                divider = prop.find("=")
+                key = prop[0:divider]
+                val = prop[divider+1:len(prop)]
 
-                if(len(key) == 0):
+                if(len(key) == 0 or len(val) == 0):
                     continue
-
-                if(len(prop_arr) != 2):
-                    blog.error("Broken package build file. Failed property of key: {}".format(key))
-                    return -1
-
-                val = prop_arr[1]
                 
                 match key:
                     case "name":
