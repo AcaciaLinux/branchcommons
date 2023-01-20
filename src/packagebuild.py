@@ -11,7 +11,7 @@ class package_build():
     @staticmethod
     def from_json(json_str):
         json_obj = json.loads(json_str)
-        blog.debug("Object after json parser is:".format(json_obj))
+        blog.debug("Object after json parser is: {}".format(json_obj))
         package_build_obj = package_build()
 
         package_build_obj.name = package_build.try_get_json_value(json_obj, "name")
