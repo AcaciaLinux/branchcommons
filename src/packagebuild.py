@@ -179,6 +179,7 @@ class package_build():
         package_build_file = open(file, "w")
         package_build_file.write("name={}\n".format(self.name))
         package_build_file.write("version={}\n".format(self.version))
+        package_build_file.write("description={}\n".format(self.description))
         package_build_file.write("real_version={}\n".format(self.real_version))
         package_build_file.write("source={}\n".format(self.source))
 
@@ -211,7 +212,6 @@ class package_build():
                 package_build_file.write("[{}]".format(dep))
        
         package_build_file.write("\n")
-        package_build_file.write("description={}\n".format(self.description))
         package_build_file.write("build={\n")
         
         for line in self.build_script:
