@@ -73,21 +73,21 @@ class package_build():
                 key = prop[0:divider]
                 val = prop[divider+1:len(prop)]
 
-                if(len(key) == 0 or len(val) == 0):
+                if(len(key) == 0 or len(val) == 0 or val is None):
                     continue
                 
                 match key:
                     case "name":
-                        package_build_obj.name = val
+                        package_build_obj.name = "{}".format(val)
                     
                     case "version":
-                        package_build_obj.version = val
+                        package_build_obj.version = "{}".format(val)
                     
                     case "real_version":
                         package_build_obj.real_version = val
                     
                     case "source":
-                        package_build_obj.source = val
+                        package_build_obj.source = "{}".format(val)
                 
                     case "extra_sources":
                         package_build_obj.extra_sources = package_build.parse_str_to_array(val) 
@@ -96,7 +96,7 @@ class package_build():
                         package_build_obj.dependencies = package_build.parse_str_to_array(val)
    
                     case "description":
-                        package_build_obj.description = val
+                        package_build_obj.description = "{}".format(val)
                         
                     case "builddeps":
                         package_build_obj.build_dependencies = package_build.parse_str_to_array(val)
