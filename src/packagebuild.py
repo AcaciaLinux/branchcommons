@@ -106,7 +106,8 @@ class package_build():
                     
                     case "build":
                         build_opts = True
-       
+        
+        blog.debug("Parsed packagebuild object is: {}".format(package_build_obj))
         return package_build_obj
 
     #
