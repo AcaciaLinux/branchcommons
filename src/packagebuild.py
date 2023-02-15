@@ -109,7 +109,11 @@ class package_build():
         
         blog.debug("Parsed packagebuild object is: {}".format(package_build_obj.__dict__))
         return package_build_obj
-    
+   
+    #
+    # Returns a package_build object
+    # from a given pkgbuild as provided by SQLite
+    #
     @staticmethod
     def from_list(plist):
         package_build_obj = package_build()
