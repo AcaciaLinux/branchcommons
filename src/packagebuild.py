@@ -109,7 +109,23 @@ class package_build():
         
         blog.debug("Parsed packagebuild object is: {}".format(package_build_obj.__dict__))
         return package_build_obj
-
+    
+    @staticmethod
+    def from_list(plist):
+        package_build_obj = package_build()
+        package_build_obj.name = plist[0]
+        package_build_obj.real_version = plist[1]
+        package_build_obj.version = plist[2]
+        package_build_obj.source = plist[3]
+        package_build_obj.extra_sources = package_build.parse_str_to_array(plist[4])
+        package_build_obj.description = plist[5]
+        package_build_obj.dependencies = package_build.parse_str_to_array(plist[6])
+        package_build_obj.build_dependencies = package_build.parse_str_to_array(plist[7])
+        package_build_obj.cross_dependencies = package_build.parse_str_to_array(plist[8])
+        package_build_obj.build_script = plist[9].split("\n")
+        
+        blog.debug("Parsed packagebuild object is: {}".format(package_build_obj.__dict__))
+        return package_build_obj
     #
     # Attempts to fetch a value by a given key,
     # returns None on KeyError
