@@ -2,7 +2,8 @@ import packagebuild
 import leafpkg
 import os
 
-SAMPLE_JSON = "{\"name\": \"iproute2\", \"version\": \"5.19.0\", \"real_version\": \"0\", \"dependencies\": \"[glibc][libelf]\", \"build_dependencies\": \"[glibc][libelf][flex][bison][findutils]\", \"cross_dependencies\": \"\", \"source\": \"https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-5.19.0.tar.xz\", \"extra_sources\": [], \"description\": \"\", \"build_script\": [\"cd $PKG_NAME-$PKG_VERSION\", \"sed -i /ARPD/d Makefile\", \"rm -fv man/man8/arpd.8\", \"make -j$(nproc) NETNS_RUN_DIR=/run/netns\", \"make DESTDIR=$PKG_INSTALL_DIR SBINDIR=/usr/sbin install\", \"rm -fv $PKG_INSTALL_DIR/usr/share/info/dir\"]}"
+SAMPLE_JSON = "{\"name\": \"doas\", \"version\": \"6.8.2\", \"real_version\": \"0\", \"dependencies\": [\"linux-pam\"], \"build_dependencies\": [\"linux-pam\", \"bash\", \"autoconf\", \"shadow\"], \"cross_dependencies\": [], \"source\": \"https://github.com/Duncaen/OpenDoas/releases/download/v6.8.2/opendoas-6.8.2.tar.xz\", \"extra_sources\": [], \"description\": \"Doas allows a normal user to gain root privileges\", \"build_script\": [\"sond\"]}"
+
 
 def test_pkgbuild():
     print("Reading from file:")
@@ -42,6 +43,8 @@ def test_pkgbuild():
     print(pkg_build2.is_valid())
     print("\n")
  
+    print("CHECK: as string")
+    print(pkg_build2.get_string())
 
 
 def test_leaf_pkg():
@@ -65,4 +68,4 @@ def test_leaf_pkg():
     lf.create_tar_package(".")
     
 test_pkgbuild()
-test_leaf_pkg()
+#test_leaf_pkg()

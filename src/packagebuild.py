@@ -191,6 +191,58 @@ class package_build():
         res["description"] = self.description
         res["build_script"] = self.build_script
         return json.dumps(res)
+    
+    #
+    # Get self as string
+    #
+    def get_string(self):
+        res = ""
+        
+        res += ("name={}\n".format(self.name))
+        res += ("version={}\n".format(self.version))
+        res += ("description={}\n".format(self.description))
+        res += ("real_version={}\n".format(self.real_version))
+        res += ("source={}\n".format(self.source))
+
+        # write extra_sources array in bpb format
+        res += ("extra_sources=")
+        
+        for exs in self.extra_sources:
+            res += ("[{}]".format(exs))
+
+        res += ("\n")
+        res += ("dependencies=")
+        
+        if(not self.build_dependencies is None):
+            for dep in self.dependencies:
+                res += ("[{}]".format(dep))
+    
+        res += ("\n")
+        res += ("builddeps=")
+        
+
+        if(not self.build_dependencies is None):
+            for dep in self.build_dependencies:
+                res += ("[{}]".format(dep))
+
+        res += ("\n")
+        res += ("crossdeps=")
+        
+        if(not self.cross_dependencies is None):
+            for dep in self.cross_dependencies:
+                res += ("[{}]".format(dep))
+       
+        res += ("\n")
+        res += ("build={\n")
+        
+        for line in self.build_script:
+            res += (line)
+            res += ("\n")
+
+        res += ("}")
+        return res 
+
+
 
     #
     # write build file to disk
