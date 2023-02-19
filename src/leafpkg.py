@@ -12,10 +12,6 @@ class leafpkg():
         self.dependencies = ""
     
     def write_package_directory(self, basedir=os.getcwd()):
-
-        print(basedir)
-        input()
-
         pkg_dir = "{}-{}".format(self.name, self.version)
         pkg_path = os.path.join(basedir, pkg_dir)
 
