@@ -49,7 +49,7 @@ class branchclient():
             return None
         
         blog.info("Connection established.")
-
+        self.ready = True
     
     #
     # Get the raw socket object
@@ -136,4 +136,9 @@ class branchclient():
         
         res = recv_only(socket)
         return res
-
+    
+    #
+    # Close the connection
+    #
+    def disconnect(self):
+        self._socket.close()
