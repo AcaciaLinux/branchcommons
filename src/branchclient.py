@@ -1,4 +1,6 @@
 import socket
+import os
+import time
 import blog
 
 class branchclient():
@@ -110,9 +112,9 @@ class branchclient():
     # previously)
     #
     def send_file(self, filepath):
-        file = open(filename, "rb")
+        file = open(filepath, "rb")
 
-        file_size = os.path.getsize(filename)
+        file_size = os.path.getsize(filepath)
         bytes_sent = 0
         start_time = time.time()
         elapsed_time = 0
@@ -120,7 +122,7 @@ class branchclient():
         while True:
             # Use sendfile to transfer the contents of the file
             # directly to the network buffer
-            bytes_sent += socket.sendfile(file, bytes_sent, file_size - bytes_sent)
+            bytes_sent += self._socket.sendfile(file, bytes_sent, file_size - bytes_sent)
 
             # Print progress report every 10 seconds
             elapsed_time += time.time() - start_time
@@ -134,7 +136,7 @@ class branchclient():
             if(bytes_sent == file_size):
                 break
         
-        res = recv_only(socket)
+        res = self.recv_msg()
         return res
     
     #
