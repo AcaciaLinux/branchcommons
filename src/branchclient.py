@@ -28,6 +28,8 @@ class branchclient():
             
             if(data == "AUTH_OK"):
                 blog.info("Authkey accepted.")
+            elif(data == "UNTRUSTED_MODE"):
+                blog.warn("Authkey sent, but the server is running in untrusted mode.")
             else:
                 blog.error("Could not authenticate: {}".format(data))
                 return
