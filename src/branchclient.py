@@ -11,7 +11,6 @@ class branchclient():
     def __init__(self, host, port, client_name, authkey, client_type):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.ready = False
-
         blog.info("Connecting to server...")
 
         try:
@@ -114,32 +113,57 @@ class branchclient():
     # previously)
     #
     def send_file(self, filepath):
-        file = open(filepath, "rb")
-
-        file_size = os.path.getsize(filepath)
-        bytes_sent = 0
-        start_time = time.time()
-        elapsed_time = 0
-
-        while True:
-            # Use sendfile to transfer the contents of the file
-            # directly to the network buffer
-            bytes_sent += self._socket.sendfile(file, bytes_sent, file_size - bytes_sent)
-
-            # Print progress report every 10 seconds
-            elapsed_time += time.time() - start_time
+        with open(filepath, "rb") as file:
+            file_size = os.path.getsize(filepath)
+            bytes_sent = 0
             start_time = time.time()
-            if(elapsed_time > 10):
-                speed = bytes_sent / elapsed_time / 1024
-                blog.info("{:.2f} KB / {:.2f} KB, {:.2f} KB/sec".format(bytes_sent / 1024, file_size / 1024, speed))
-                elapsed_time = 0  # Reset elapsed time
+            elapsed_time = 0
 
-            # we are done sending
-            if(bytes_sent == file_size):
-                break
-        
-        res = self.recv_msg()
-        return res
+            while True:
+                # Use sendfile to transfer the contents of the file
+                # directly to the network buffer
+                bytes_sent += self._socket.sendfile(file, bytes_sent, file_size - bytes_sent)
+
+                # Print progress report every 10 seconds
+                elapsed_time += time.time() - start_time
+                start_time = time.time()
+                if(elapsed_time > 10):
+                    speed = bytes_sent / elapsed_time / 1024
+                    blog.info("{:.2f} KB / {:.2f} KB, {:.2f} KB/sec".format(bytes_sent / 1024, file_size / 1024, speed))
+                    elapsed_time = 0  # Reset elapsed time
+
+                # we are done sending
+                if(bytes_sent == file_size):
+                    break
+            
+            res = self.recv_msg()
+            return res
+
+    #
+    # Receives a file from the server (needs to be set up
+    # previously). Needs bytes to read and target filepath.
+    #
+    # True if received all expected bytes,
+    # False if bytes were lost or socket died
+    def receive_file(self, filepath, filesize):
+        with open(filepath, "wb") as _file:
+            bytes_read = 0
+
+            while(not bytes_read == filesize):
+                data = self._socket.recv(4096)
+                
+                # no more data, socket died.
+                if(data == b""):
+                    break
+
+                bytes_read += len(data)
+                _file.write(data)
+            
+            if(bytes_read == filesize):
+                return True
+            else:
+                return False
+
     
     #
     # Close the connection
