@@ -296,6 +296,10 @@ class package_build():
     # Checks if a package build is valid
     #
     def is_valid(self):
+        # check if name is None
+        if(self.name == None or self.version == None or self.real_version == None):
+            return False
+
         # check if required fields are set
         if(self.name == "" or self.version == "" or self.real_version == ""):
             return False
