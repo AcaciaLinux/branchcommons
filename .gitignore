@@ -9,6 +9,3 @@
 
 #Do not track pkg dir
 *pkgs*
-
-#Do not track .bpb
-*.bpb

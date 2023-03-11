@@ -39,8 +39,8 @@ class package_build():
             blog.error("Could not load packagefile.")
             return -1
         
-        build_file = open(file_path, "r")
-        return package_build.from_string(build_file.read())
+        with open(file_path, "r") as build_file:
+            return package_build.from_string(build_file.read())
 
     #
     # Returns a package_build object
@@ -78,11 +78,17 @@ class package_build():
                 
                 match key:
                     case "name":
-                        package_build_obj.name = "{}".format(val)
+                        if(val is None):
+                            package_build_obj.name = None
+                        else:
+                            package_build_obj.name = "{}".format(val)
                     
                     case "version":
-                        package_build_obj.version = "{}".format(val)
-                    
+                        if(val is None):
+                            package_build_obj.version = None    
+                        else:
+                            package_build_obj.version = "{}".format(val)
+
                     case "real_version":
                         package_build_obj.real_version = val
                     
@@ -180,9 +186,9 @@ class package_build():
     #
     def get_json(self):
         res = { }
-        res["name"] = "{}".format(self.name)
-        res["version"] = "{}".format(self.version)
-        res["real_version"] = "{}".format(self.real_version)
+        res["name"] = self.name
+        res["version"] = self.version
+        res["real_version"] = self.real_version
         res["dependencies"] = self.dependencies
         res["build_dependencies"] = self.build_dependencies
         res["cross_dependencies"] = self.cross_dependencies
@@ -248,49 +254,49 @@ class package_build():
     # write build file to disk
     #
     def write_build_file(self, file):
-        package_build_file = open(file, "w")
-        package_build_file.write("name={}\n".format(self.name))
-        package_build_file.write("version={}\n".format(self.version))
-        package_build_file.write("description={}\n".format(self.description))
-        package_build_file.write("real_version={}\n".format(self.real_version))
-        package_build_file.write("source={}\n".format(self.source))
+        with open(file, "w") as package_build_file:
+            package_build_file.write("name={}\n".format(self.name))
+            package_build_file.write("version={}\n".format(self.version))
+            package_build_file.write("description={}\n".format(self.description))
+            package_build_file.write("real_version={}\n".format(self.real_version))
+            package_build_file.write("source={}\n".format(self.source))
 
-        # write extra_sources array in bpb format
-        package_build_file.write("extra_sources=")
-        
-        for exs in self.extra_sources:
-            package_build_file.write("[{}]".format(exs))
+            # write extra_sources array in bpb format
+            package_build_file.write("extra_sources=")
+            
+            for exs in self.extra_sources:
+                package_build_file.write("[{}]".format(exs))
 
-        package_build_file.write("\n")
-        package_build_file.write("dependencies=")
-        
-        if(not self.build_dependencies is None):
-            for dep in self.dependencies:
-                package_build_file.write("[{}]".format(dep))
-    
-        package_build_file.write("\n")
-        package_build_file.write("builddeps=")
-        
-
-        if(not self.build_dependencies is None):
-            for dep in self.build_dependencies:
-                package_build_file.write("[{}]".format(dep))
-
-        package_build_file.write("\n")
-        package_build_file.write("crossdeps=")
-        
-        if(not self.cross_dependencies is None):
-            for dep in self.cross_dependencies:
-                package_build_file.write("[{}]".format(dep))
-       
-        package_build_file.write("\n")
-        package_build_file.write("build={\n")
-        
-        for line in self.build_script:
-            package_build_file.write(line)
             package_build_file.write("\n")
+            package_build_file.write("dependencies=")
+            
+            if(not self.build_dependencies is None):
+                for dep in self.dependencies:
+                    package_build_file.write("[{}]".format(dep))
+        
+            package_build_file.write("\n")
+            package_build_file.write("builddeps=")
+            
 
-        package_build_file.write("}")
+            if(not self.build_dependencies is None):
+                for dep in self.build_dependencies:
+                    package_build_file.write("[{}]".format(dep))
+
+            package_build_file.write("\n")
+            package_build_file.write("crossdeps=")
+            
+            if(not self.cross_dependencies is None):
+                for dep in self.cross_dependencies:
+                    package_build_file.write("[{}]".format(dep))
+           
+            package_build_file.write("\n")
+            package_build_file.write("build={\n")
+            
+            for line in self.build_script:
+                package_build_file.write(line)
+                package_build_file.write("\n")
+
+            package_build_file.write("}")
     
     #
     # Checks if a package build is valid

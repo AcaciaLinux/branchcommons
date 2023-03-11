@@ -1,10 +1,12 @@
 name=docbook-xml
 version=4.5
+description=The DocBook-4.5 XML DTD-4.5 package contains document type definitions for verification of XML data files against the DocBook rule set.
 real_version=0
 source=https://www.docbook.org/xml/4.5/docbook-xml-4.5.zip
+extra_sources=
 dependencies=[libxml2][sgml-common][unzip]
 builddeps=[libxml2][sgml-common][unzip]
-description=The DocBook-4.5 XML DTD-4.5 package contains document type definitions for verification of XML data files against the DocBook rule set.
+crossdeps=
 build={
 	mkdir $PKG_NAME-$PKG_VERSION
 	cd $PKG_NAME-$PKG_VERSION
