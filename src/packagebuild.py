@@ -11,23 +11,26 @@ class package_build():
     @staticmethod
     def from_json(json_str):
         json_obj = json.loads(json_str)
-        blog.debug("Object after json parser is: {}".format(json_obj))
+        return package_build.from_dict(json_obj)
+    
+    @staticmethod
+    def from_dict(pkgbuild_dict):
         package_build_obj = package_build()
 
-        package_build_obj.name = package_build.try_get_json_value(json_obj, "name")
-        package_build_obj.real_version = package_build.try_get_json_value(json_obj, "real_version")
-        package_build_obj.version = package_build.try_get_json_value(json_obj, "version")
-        package_build_obj.source = package_build.try_get_json_value(json_obj, "source")
+        package_build_obj.name = package_build.try_get_json_value(pkgbuild_dict, "name")
+        package_build_obj.real_version = package_build.try_get_json_value(pkgbuild_dict, "real_version")
+        package_build_obj.version = package_build.try_get_json_value(pkgbuild_dict, "version")
+        package_build_obj.source = package_build.try_get_json_value(pkgbuild_dict, "source")
         
-        package_build_obj.extra_sources = package_build.try_get_json_value(json_obj, "extra_sources")
-        package_build_obj.description = package_build.try_get_json_value(json_obj, "description")
-        package_build_obj.dependencies = package_build.try_get_json_value(json_obj, "dependencies")
-        package_build_obj.build_dependencies = package_build.try_get_json_value(json_obj, "build_dependencies")
-        package_build_obj.cross_dependencies = package_build.try_get_json_value(json_obj, "cross_dependencies")
+        package_build_obj.extra_sources = package_build.try_get_json_value(pkgbuild_dict, "extra_sources")
+        package_build_obj.description = package_build.try_get_json_value(pkgbuild_dict, "description")
+        package_build_obj.dependencies = package_build.try_get_json_value(pkgbuild_dict, "dependencies")
+        package_build_obj.build_dependencies = package_build.try_get_json_value(pkgbuild_dict, "build_dependencies")
+        package_build_obj.cross_dependencies = package_build.try_get_json_value(pkgbuild_dict, "cross_dependencies")
 
-        package_build_obj.build_script = package_build.try_get_json_value(json_obj, "build_script")
+        package_build_obj.build_script = package_build.try_get_json_value(pkgbuild_dict, "build_script")
         return package_build_obj
-   
+
     #
     # Returns a package_build object
     # from a given file
@@ -180,11 +183,11 @@ class package_build():
         self.extra_sources = [ ]
         self.description = None
         self.build_script = [ ]
-   
+
     #
-    # Get self as json
+    # Get self as dict
     #
-    def get_json(self):
+    def get_dict(self):
         res = { }
         res["name"] = self.name
         res["version"] = self.version
@@ -196,7 +199,13 @@ class package_build():
         res["extra_sources"] = self.extra_sources
         res["description"] = self.description
         res["build_script"] = self.build_script
-        return json.dumps(res)
+        return res
+
+    #
+    # Get self as json
+    #
+    def get_json(self):
+        return json.dumps(self.get_dict())
     
     #
     # Get self as string

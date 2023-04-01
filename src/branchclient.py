@@ -3,6 +3,10 @@ import os
 import time
 import blog
 
+from branchpacket import BranchRequest, BranchResponse, BranchStatus
+
+BRANCH_PROTOCOL_VERSION = 0
+
 class branchclient():
     
     #
@@ -19,58 +23,48 @@ class branchclient():
             blog.error("Could not establish connection: {}".format(ex))
             return
 
-        blog.info("Connection established!")
-       
-        if(authkey is not None):
-            blog.info("Sending auth key...")
-            data = self.send_recv_msg("AUTH {}".format(authkey))
+        auth_request = BranchRequest("AUTH", {
+                "machine_identifier": client_name,
+                "machine_type": client_type,
+                "machine_authkey": authkey,
+                "machine_version": BRANCH_PROTOCOL_VERSION
+        })
+        
+        auth_response = self.send_recv_msg(auth_request)
+        if(auth_response == None):
+            return
+
+        match auth_response.statuscode:
+            case BranchStatus.OK:
+                blog.info("Connection established to server using protocol v{}. Server: {}".format(BRANCH_PROTOCOL_VERSION, auth_response.payload["logon_message"]))
             
-            if(data == "AUTH_OK"):
-                blog.info("Authkey accepted.")
-            elif(data == "UNTRUSTED_MODE"):
-                blog.warn("Authkey sent, but the server is running in untrusted mode.")
-            else:
-                blog.error("Could not authenticate: {}".format(data))
+            case BranchStatus.REQUEST_FAILURE:
+                blog.error("Could not authenticate: {}".format(auth_response.payload))
                 return
 
-        blog.info("Sending machine type...")
-        data = self.send_recv_msg("SET_MACHINE_TYPE {}".format(client_type))
-        
-        if(data == "CMD_OK"):
-            blog.info("Machine type granted.")
-        else:
-            blog.error("Could not set machine type: {}".format(data))
-            return None
-
-        blog.info("Sending client name...")
-        data = self.send_recv_msg("SET_MACHINE_NAME {}".format(client_name))
-
-        if(data == "CMD_OK"):
-            blog.info("Client name accepted.")
-        else:
-            blog.error("An error occured: {}".format(data))
-            return None
-        
-        blog.info("Connection established.")
+            case BranchStatus.INTERNAL_SERVER_ERROR:
+                blog.error("Internal server error: {}".format(auth_response.payload))
+                return
+            
         self.ready = True
     
     #
     # Get the raw socket object
     #
-    def get_socket_object(self):
+    def get_socket_object(self) -> socket.socket:
         return self._socket
     
     #
     # Send data on this client socket
     # 
-    def send_msg(self, message):
-        message = "{} {}".format(len(bytes(message, "utf-8")), message)
+    def send_msg(self, message: BranchRequest):
+        message = "{} {}".format(len(bytes(message.as_json(), "utf-8")), message.as_json())
         self._socket.sendall(bytes(message, "utf-8"))
 
     #
     # Receive data on this client socket
     # 
-    def recv_msg(self):
+    def recv_msg(self) -> BranchResponse:
         data = None
 
         try:
@@ -91,19 +85,19 @@ class branchclient():
         try:
             cmd_bytes = int(data_str[0:data_str_loc])
         except ValueError:
-            blog.warn("Byte count error from Server.")
+            blog.warn("Byte count error from server.")
             return None
 
         while(len(data_trimmed) != cmd_bytes):
             data_trimmed += self._socket.recv(4096)
 
-        return data_trimmed.decode("utf-8")    
+        return BranchResponse.from_json(data_trimmed.decode("utf-8"))
     
     #
     # Send a message and read response
     #
     # Returns: NONE on Failure
-    def send_recv_msg(self, message):
+    def send_recv_msg(self, message: BranchRequest) -> BranchResponse:
         self.send_msg(message)
         return self.recv_msg()
 
