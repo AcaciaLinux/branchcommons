@@ -92,6 +92,40 @@ class branchclient():
             data_trimmed += self._socket.recv(4096)
 
         return BranchResponse.from_json(data_trimmed.decode("utf-8"))
+
+    #
+    # Receive a BranchRequest on this client socket (Buildbot)
+    # 
+    def recv_branch_request(self) -> BranchRequest:
+        data = None
+
+        try:
+            data = self._socket.recv(4096)
+        except ConnectionResetError:
+            return None
+
+        data_str = data.decode("utf-8")
+        data_str_loc = data_str.find(" ")
+        cmd_bytes = 0
+
+        data_trimmed = data[data_str_loc+1:len(data)]
+
+        if(data_str_loc == -1):
+            blog.error("Connection failed.")
+            return None
+
+        try:
+            cmd_bytes = int(data_str[0:data_str_loc])
+        except ValueError:
+            blog.warn("Byte count error from server.")
+            return None
+
+        while(len(data_trimmed) != cmd_bytes):
+            data_trimmed += self._socket.recv(4096)
+
+        return BranchRequest.from_json(data_trimmed.decode("utf-8"))
+
+
     
     #
     # Send a message and read response

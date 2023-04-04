@@ -13,7 +13,11 @@ class BranchRequest():
     
     @staticmethod
     def from_json(json_str: str):
-        json_obj = json.loads(json_str)
+        try:
+            json_obj = json.loads(json_str)
+        except Exception as ex:
+            raise TypeError("Not a valid BranchPacket")
+
         try:
             command = json_obj["command"]
             payload = json_obj["payload"]
@@ -38,7 +42,11 @@ class BranchResponse():
 
     @staticmethod
     def from_json(json_str: str):
-        json_obj = json.loads(json_str)
+        try:
+            json_obj = json.loads(json_str)
+        except Exception as ex:
+            raise TypeError("Not a valid BranchPacket")
+        
         try:
             statuscode = json_obj["statuscode"]
             payload = json_obj["payload"]
