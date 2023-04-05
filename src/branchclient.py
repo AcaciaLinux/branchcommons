@@ -140,7 +140,7 @@ class branchclient():
     # Send a file to the server (needs to be set up
     # previously)
     #
-    def send_file(self, filepath):
+    def send_file(self, filepath) -> BranchResponse:
         with open(filepath, "rb") as file:
             file_size = os.path.getsize(filepath)
             bytes_sent = 0
