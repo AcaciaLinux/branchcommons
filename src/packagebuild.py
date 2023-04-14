@@ -1,6 +1,7 @@
 import os
 import json
 import blog
+import re
 
 class package_build():
     
@@ -319,6 +320,16 @@ class package_build():
         if(self.name == "" or self.version == "" or self.real_version == ""):
             return False
 
+        # check if real_version is number
+        if(not self.real_version.isdigit()):
+            return False
+
+        # only -, _, numbers and letters are allowed as the pkgname
+        regex = re.compile('[a-zA-Z0-9_-]+')
+        if(not regex.fullmatch(self.name)):
+            print(self.name)
+            return False
+    
         # check if build tag is valid
         encountered_closing_tag = False
         closing_tag_error = False
