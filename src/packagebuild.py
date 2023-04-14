@@ -327,7 +327,6 @@ class package_build():
         # only -, _, numbers and letters are allowed as the pkgname
         regex = re.compile('[a-zA-Z0-9_-]+')
         if(not regex.fullmatch(self.name)):
-            print(self.name)
             return False
     
         # check if build tag is valid
