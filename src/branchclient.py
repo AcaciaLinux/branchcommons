@@ -5,7 +5,7 @@ import blog
 
 from branchpacket import BranchRequest, BranchResponse, BranchStatus
 
-BRANCH_PROTOCOL_VERSION = 0
+BRANCH_PROTOCOL_VERSION = 1
 
 class branchclient():
     
