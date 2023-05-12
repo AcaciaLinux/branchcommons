@@ -1,4 +1,4 @@
-name=docbook-xml
+name=dc++++bookxml
 version=4.5
 description=The DocBook-4.5 XML DTD-4.5 package contains document type definitions for verification of XML data files against the DocBook rule set.
 real_version=0

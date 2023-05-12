@@ -325,7 +325,7 @@ class package_build():
             return False
 
         # only -, _, numbers and letters are allowed as the pkgname
-        regex = re.compile('[a-zA-Z0-9_-]+')
+        regex = re.compile('[a-zA-Z0-9_+-]+')
         if(not regex.fullmatch(self.name)):
             return False
     
